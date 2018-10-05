@@ -51,6 +51,11 @@ function drawField(fieldHeight, fieldWidth){
 
 }
 function drawSnake(){
+
+    //put to the middle of the field:
+    snakeX=fieldWidth/2;
+    snakeY= fieldHeight/2;
+    
     cursor.bg.green();
 
     cursor.bg.black();

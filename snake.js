@@ -5,56 +5,88 @@ show cursor: process.stdout.write('\x1B[?25h');
 */
 process.stdout.write("+x+x+x+SNAKE+x+x+x+");
 process.stdout.write("\n");
+
 //npm packages:
 var ansi = require("ansi");
+
 var keypress = require("keypress");
 keypress(process.stdin);
 
 
+
 //variables
-var points=0;
-var appleX;     
-var appleY;   
+var score = 0;
+var appleX;
+var appleY;
 
 var snakeX;
 var snakeY;
 
-var fieldWidth;
-var fieldHeight;
+var fieldWidth=20;
+var fieldHeight=20;
 
 var posX;
 var posY;
 
-var gameOver=false;
+var gameOver = false;
 
-var  cursor = ansi(process.stdout);
+var cursor = ansi(process.stdout);
+process.stdin.on('keypress', readInput);
 
-//Game:
-while(gameOver != false){
+//------------------GAME-----------------------
+
+placeSnake();
+drawField(fieldHeight,fieldWidth);
+
+while (gameOver != false) {
     //<- calling function, after every snake- move call 'gameOver' function to check if snake ran into the fieldborder ->
 
     moveSnake();
     gameOver();
-}
-
-drawField(fieldHeight,fieldWidth);
-drawSnake();
 
 
 
-//Functions:
-function drawField(fieldHeight, fieldWidth){
-    cursor.bg.blue();
-    process.stdout.write("Color-test");
-    cursor.bg.black();
 
+    
 
 }
-function drawSnake(){
+
+//----------GAME FIELD----------
+    function drawField(fieldHeight, fieldWidth) {
+        cursor.bg.blue();
+        process.stdout.write("Color-test");
+        cursor.bg.white();
+
+        drawWidth(1, 1, fieldWidth);
+
+        drawHeight(1, 2, fieldHeight);
+
+
+    }
+
+function drawWidth(col, row, length) {
+    for (var i = 0; i < length; i++) {
+        cursor.goto(col + i, row).write(' ');
+    }
+}
+
+function drawHeight(col, row, length) {
+    for (var i = 0; i < length; i++) {
+        cursor.goto(col, row + i).write(' ');
+    }
+}
+
+
+
+
+
+
+//---------- SNAKE ----------
+function placeSnake() {
 
     //put to the middle of the field:
-    snakeX=fieldWidth/2;
-    snakeY= fieldHeight/2;
+    snakeX = fieldWidth / 2;
+    snakeY = fieldHeight / 2;
 
     cursor.bg.green();
 
@@ -62,35 +94,67 @@ function drawSnake(){
 
 }
 
-function moveSnake(){
-    snakeX=snakeX+posX;
-    snakeY= snakeY+posY;
+function moveSnake() {
+    snakeX = snakeX + posX;
+    snakeY = snakeY + posY;
 
 }
 
-function removeSnake(){
-
-}
-
-function drawApple(){
+function removeSnake() {
 
 }
 
 
-function removeApple(){
+
+
+
+//---------- APPLE ----------
+
+function drawApple() {
 
 }
 
 
-function gameOver(){
-    if(snakeX == fieldWidth || snakeY == fieldHeight){
+function removeApple() {
+
+}
+
+
+
+//---------- ETC  ----------
+
+function gameOver() {
+    if (snakeX == fieldWidth || snakeY == fieldHeight) {
         process.stdout.write("GAME OVER");
         return true;
-    }else{
+    } else {
         return false;
     }
 }
 
-function readInput(){
+function readInput(ch, key) {
+    // up:
+    if (key.name == "up") {
+        posY = posY + 1;
+        process.stdout.write("up");
+
+        //down:
+    } else if (key.name == "down") {
+        posY = posY - 1;
+        process.stdout.write("down");
+
+        //right:
+    } else if (key.name == "right") {
+        posX = posX + 1;
+        process.stdout.write("right");
+
+    } else {
+        //left:
+        posX = posX - 1;
+        process.stdout.write("left");
+
+    }
+
 
 }
+

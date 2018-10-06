@@ -13,104 +13,114 @@ var keypress = require("keypress");
 keypress(process.stdin);
 
 
-
 //variables
 var score = 0;
 var appleX;
 var appleY;
 
-var snakeX;
-var snakeY;
+var snakeX;     //direction X
+var snakeY;     //direction Y
 
-var fieldWidth=20;
-var fieldHeight=20;
+var dirX;
+var dirY;
 
-var posX;
-var posY;
+var fieldWidth = 40;
+var fieldHeight = 20;
+
 
 var gameOver = false;
 
 var cursor = ansi(process.stdout);
-process.stdin.on('keypress', readInput);
+process.stdin.on("keypress", handleInput);
+
 
 //------------------GAME-----------------------
 
+
+process.stdout.write('\x1Bc'); //clears screen
+
+drawField(fieldHeight, fieldWidth);
+
 placeSnake();
-drawField(fieldHeight,fieldWidth);
+drawApple();
 
-while (gameOver != false) {
+
+while (gameOver == true) {
     //<- calling function, after every snake- move call 'gameOver' function to check if snake ran into the fieldborder ->
-
+    
     moveSnake();
     gameOver();
 
-
-
-
-    
-
 }
+
+
+
 
 //----------GAME FIELD----------
-    function drawField(fieldHeight, fieldWidth) {
-        cursor.bg.blue();
-        process.stdout.write("Color-test");
-        cursor.bg.white();
+function drawField(fieldHeight, fieldWidth) {
 
-        drawWidth(1, 1, fieldWidth);
+    //Breite:
+    cursor.bg.white();
+    drawWidth(1, 1, fieldWidth);
+    drawWidth(1, fieldHeight, fieldWidth);
 
-        drawHeight(1, 2, fieldHeight);
+    //Höhe:
+    cursor.bg.blue();
+    drawHeight(fieldWidth, 1, fieldHeight);
+    drawHeight(1, 1, fieldHeight);
+    cursor.bg.black();
 
 
-    }
+}
 
-function drawWidth(col, row, length) {
+function drawWidth(column, row, length) {
     for (var i = 0; i < length; i++) {
-        cursor.goto(col + i, row).write(' ');
+        cursor.goto(column + i, row).write(" ");
     }
 }
 
-function drawHeight(col, row, length) {
+function drawHeight(column, row, length) {
     for (var i = 0; i < length; i++) {
-        cursor.goto(col, row + i).write(' ');
+        cursor.goto(column, row + i).write("x");
     }
 }
-
-
-
 
 
 
 //---------- SNAKE ----------
 function placeSnake() {
-
     //put to the middle of the field:
     snakeX = fieldWidth / 2;
     snakeY = fieldHeight / 2;
 
     cursor.bg.green();
-
-    cursor.bg.black();
-
+    cursor.goto(snakeX, snakeY).write(" ");
+    cursor.bg.reset();
 }
 
 function moveSnake() {
-    snakeX = snakeX + posX;
-    snakeY = snakeY + posY;
+    snakeX = snakeX + dirX;
+    snakeY = snakeY + dirY;
+
+    drawAppleSnake(snakeX,snakeY);
 
 }
 
-function removeSnake() {
 
+function drawAppleSnake(x, y) {
+    cursor.goto(x, y).write(" ");
 }
-
-
-
 
 
 //---------- APPLE ----------
 
 function drawApple() {
+    appleX = Math.floor((Math.random() * (fieldWidth-1) ) + 1);
+    appleY = Math.floor((Math.random() * (fieldHeight-1) ) + 1);
+
+    cursor.bg.red();
+    drawAppleSnake(appleX,appleY);
+    cursor.bg.reset();
 
 }
 
@@ -132,29 +142,32 @@ function gameOver() {
     }
 }
 
-function readInput(ch, key) {
+function handleInput(ch, key) {
     // up:
-    if (key.name == "up") {
-        posY = posY + 1;
+    if (key.name == 'up') {
         process.stdout.write("up");
+        dirY =  1;
+        
 
         //down:
     } else if (key.name == "down") {
-        posY = posY - 1;
         process.stdout.write("down");
+        dirY =  -1;
+        
 
         //right:
     } else if (key.name == "right") {
-        posX = posX + 1;
         process.stdout.write("right");
+        dirX =  1;
+        
 
     } else {
         //left:
-        posX = posX - 1;
         process.stdout.write("left");
+        dirX =-1;
+  
 
     }
-
 
 }
 

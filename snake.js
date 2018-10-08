@@ -11,7 +11,7 @@ var ansi = require("ansi");
 
 var keypress = require("keypress");
 keypress(process.stdin);
-process.stdin.setRawMode(true);
+process.stdin.setRawMode(true);         //You don't have to press enter after the key-input
 
 
 //variables
@@ -29,10 +29,10 @@ var fieldWidth = 40;
 var fieldHeight = 20;
 
 
-var gameOver = false;
+var gameOver = true;
 
 var cursor = ansi(process.stdout);
-process.stdin.on("keypress", handleInput);
+
 
 
 //------------------GAME-----------------------
@@ -40,21 +40,34 @@ process.stdin.on("keypress", handleInput);
 
 process.stdout.write('\x1Bc'); //clears screen
 
-/*drawField(fieldHeight, fieldWidth);
+drawField(fieldHeight, fieldWidth);
 
 placeSnake();
-drawApple();*/
+drawApple();
+
 
 
 while (gameOver == true) {
-    //<- calling function, after every snake- move call 'gameOver' function to check if snake ran into the fieldborder ->
-    
+
     moveSnake();
-    gameOver();
+
+
+    if (snakeX == fieldWidth || snakeX == fieldHeight|| snakeY == fieldWidth || snakeY == fieldHeight) {
+        process.stdout.write("YOU DIED!");
+        gameOver = true;
+    } else {
+        gameOver = false;
+
+
+        //Apple is eaten:
+        if (snakeX == appleX && snakeY == snakeY) {
+            score++;
+            drawApple();
+        }
+
+    }
 
 }
-
-
 
 
 //----------GAME FIELD----------
@@ -71,6 +84,8 @@ function drawField(fieldHeight, fieldWidth) {
     drawHeight(1, 1, fieldHeight);
     cursor.bg.black();
 
+    process.stdout.write("\n");
+    process.stdout.write("Score: " + score);
 
 }
 
@@ -100,10 +115,12 @@ function placeSnake() {
 }
 
 function moveSnake() {
+
     snakeX = snakeX + dirX;
     snakeY = snakeY + dirY;
 
-    drawAppleSnake(snakeX,snakeY);
+    process.stdin.on("keypress", handleInput);
+    drawAppleSnake(snakeX, snakeY);
 
 }
 
@@ -116,17 +133,12 @@ function drawAppleSnake(x, y) {
 //---------- APPLE ----------
 
 function drawApple() {
-    appleX = Math.floor((Math.random() * (fieldWidth-1) ) + 1);
-    appleY = Math.floor((Math.random() * (fieldHeight-1) ) + 1);
+    appleX = Math.floor((Math.random() * (fieldWidth - 1)) + 2);
+    appleY = Math.floor((Math.random() * (fieldHeight - 1)) + 2);
 
     cursor.bg.red();
-    drawAppleSnake(appleX,appleY);
+    drawAppleSnake(appleX, appleY);
     cursor.bg.reset();
-
-}
-
-
-function removeApple() {
 
 }
 
@@ -135,7 +147,7 @@ function removeApple() {
 //---------- ETC  ----------
 
 function gameOver() {
-    if (snakeX == fieldWidth || snakeY == fieldHeight) {
+    if (snakeX == fieldWidth || snakeX == fieldWidth || snakeY == fieldWidth || snakeY == fieldHeight) {
         process.stdout.write("GAME OVER");
         return true;
     } else {
@@ -144,29 +156,12 @@ function gameOver() {
 }
 
 function handleInput(ch, key) {
-    // up:
-    if (key.name == 'up') {
-        process.stdout.write("up");
-        dirY =  1;
-        
 
-        //down:
-    } else if (key.name == "down") {
-        process.stdout.write("down");
-        dirY =  -1;
-        
-
-        //right:
-    } else if (key.name == "right") {
-        process.stdout.write("right");
-        dirX =  1;
-        
-
-    } else {
-        //left:
-        process.stdout.write("left");
-        dirX =-1;
-  
+    switch (key) {
+        case "up": dirY = 1;  break;
+        case "down": dirY = -1; break;
+        case "left": dirX = -1; break;
+        default: dirX = 1;            //right
 
     }
 

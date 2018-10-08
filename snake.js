@@ -11,6 +11,7 @@ var ansi = require("ansi");
 
 var keypress = require("keypress");
 keypress(process.stdin);
+process.stdin.setRawMode(true);
 
 
 //variables
@@ -39,10 +40,10 @@ process.stdin.on("keypress", handleInput);
 
 process.stdout.write('\x1Bc'); //clears screen
 
-drawField(fieldHeight, fieldWidth);
+/*drawField(fieldHeight, fieldWidth);
 
 placeSnake();
-drawApple();
+drawApple();*/
 
 
 while (gameOver == true) {

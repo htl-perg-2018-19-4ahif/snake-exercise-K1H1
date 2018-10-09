@@ -36,6 +36,7 @@ var cursor = ansi(process.stdout);
 
 
 
+
 //------------------GAME-----------------------
 
 
@@ -46,31 +47,24 @@ drawField(fieldHeight, fieldWidth);
 
 placeSnake();
 drawApple();
+gameLoop();
 
-
-
-while (!gameOver) {
-    moveSnake();
-
-
-    if (snakeX == fieldWidth || snakeX == fieldHeight|| snakeY == fieldWidth || snakeY == fieldHeight) {
-        process.stdout.write("YOU DIED!");
-        gameOver = true;
-    } else {
-
-        //Apple is eaten:
-        if (snakeX == appleX && snakeY == snakeY) {
-            score++;
-            drawApple();
-        }
-
-    }
-
-}
 
 // Alternative solution:
 function gameLoop() {
+    moveSnake();
 
+        if (snakeX == fieldWidth || snakeX == fieldHeight|| snakeY == fieldWidth || snakeY == fieldHeight) {
+            process.stdout.write("YOU DIED!");
+        } else {
+
+            //Apple is eaten:
+            if (snakeX == appleX && snakeY == snakeY) {
+                score++;
+                drawApple();
+            }
+
+        }
 
     // Waits x seconds and calls the gameLoop function again
     setTimeout(gameLoop, 1000 / speed);

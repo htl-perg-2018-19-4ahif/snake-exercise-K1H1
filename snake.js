@@ -46,8 +46,7 @@ placeSnake();
 drawApple();
 
 
-
-while (gameOver == true) {
+    while (gameOver == false) {
 
     moveSnake();
 
@@ -57,17 +56,21 @@ while (gameOver == true) {
         gameOver = true;
     } else {
         gameOver = false;
-
-
+    
         //Apple is eaten:
         if (snakeX == appleX && snakeY == snakeY) {
             score++;
             drawApple();
         }
 
-    }
+    
 
+
+    }
 }
+
+
+
 
 
 //----------GAME FIELD----------

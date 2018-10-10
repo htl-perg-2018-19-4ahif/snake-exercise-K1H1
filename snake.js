@@ -19,8 +19,8 @@ var score = 0;
 var appleX;
 var appleY;
 
-var snakeX;     //direction X
-var snakeY;     //direction Y
+var snakeX;     //position X
+var snakeY;     //position Y 
 
 var dirX;
 var dirY;
@@ -31,14 +31,10 @@ var fieldHeight = 20;
 var speed = 3;
 
 
-var gameOver = false;
 var cursor = ansi(process.stdout);
 
 
-
-
 //------------------GAME-----------------------
-
 
 process.stdout.write('\x1Bc'); //clears screen
 process.stdout.write('\x1B[?25l');  // hide the cursor
@@ -49,18 +45,19 @@ placeSnake();
 drawApple();
 gameLoop();
 
-
-// Alternative solution:
 function gameLoop() {
     moveSnake();
 
-        if (snakeX == fieldWidth || snakeX == fieldHeight|| snakeY == fieldWidth || snakeY == fieldHeight) {
-            process.stdout.write("YOU DIED!");
+
+   
+        if (gameOver()) {
+            process.stdout.write("YOUR SNAKE DIED!");
         } else {
 
             //Apple is eaten:
-            if (snakeX == appleX && snakeY == snakeY) {
+            if (snakeX == appleX && snakeX == appleY && snakeY == appleX && snakeY == appleY) {
                 score++;
+                speed = speed+2;
                 drawApple();
             }
 
@@ -117,8 +114,8 @@ function placeSnake() {
 
 function moveSnake() {
 
-    snakeX = snakeX + dirX;
-    snakeY = snakeY + dirY;
+    snakeX = (snakeX + dirX)+speed;
+    snakeY = (snakeY + dirY)+speed;
 
     process.stdin.on("keypress", handleInput);
     drawAppleSnake(snakeX, snakeY);
@@ -134,8 +131,8 @@ function drawAppleSnake(x, y) {
 //---------- APPLE ----------
 
 function drawApple() {
-    appleX = Math.floor((Math.random() * (fieldWidth - 1)) + 2);
-    appleY = Math.floor((Math.random() * (fieldHeight - 1)) + 2);
+    appleX = Math.floor((Math.random() * (fieldWidth - 2)) + 2);
+    appleY = Math.floor((Math.random() * (fieldHeight - 2)) + 2);
 
     cursor.bg.red();
     drawAppleSnake(appleX, appleY);
@@ -148,8 +145,7 @@ function drawApple() {
 //---------- ETC  ----------
 
 function gameOver() {
-    if (snakeX == fieldWidth || snakeX == fieldWidth || snakeY == fieldWidth || snakeY == fieldHeight) {
-        process.stdout.write("GAME OVER");
+    if (snakeX == fieldWidth || snakeX == fieldHeight|| snakeY == fieldWidth || snakeY == fieldHeight) {
         return true;
     } else {
         return false;
